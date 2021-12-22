@@ -1,4 +1,4 @@
-import { logFunc } from '../utils/log'
+import { logFunc } from '@/utils/log'
 
 type ExternalPlugins = {
   [key: string]: Array<string>
