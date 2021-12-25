@@ -4,7 +4,6 @@ import path from 'path'
 import commonjs from '@rollup/plugin-commonjs'
 import externalGlobals from 'rollup-plugin-external-globals'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   build: {
