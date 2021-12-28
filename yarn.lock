@@ -842,10 +842,10 @@ ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-ant-design-vue@^3.0.0-alpha.14:
-  version "3.0.0-beta.1"
-  resolved "https://registry.npmmirror.com/ant-design-vue/download/ant-design-vue-3.0.0-beta.1.tgz#3c8959dcd2172c4b6d8ec540a820577f31b4a9e6"
-  integrity sha512-NL9g2YMwK7tKX41lEyPZwze8zfusX9mb0h6PMhZDmbn6xp21tLwqyPo74azl67ZvEbOxajHsdJj7WwOD8TG4Dg==
+ant-design-vue@^3.0.0-beta.1:
+  version "3.0.0-beta.4"
+  resolved "https://registry.npmmirror.com/ant-design-vue/download/ant-design-vue-3.0.0-beta.4.tgz#e6f7861682875d77220d02ffe561b2b2022cd15b"
+  integrity sha512-WUkA8LyXw35vi1OOHTzvtcet0lEhNGCQNF85zEOHpPlA1Xf8KWCricFeiA38fgg2AHWvE1mrVw/wqB1kXBJM1Q==
   dependencies:
     "@ant-design/colors" "^6.0.0"
     "@ant-design/icons-vue" "^6.0.0"
