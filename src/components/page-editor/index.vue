@@ -37,9 +37,16 @@ import SvgIcon from '@/components/svg-icon/index.vue'
     text-align: center;
     color: #b3b9bf;
 
+    &:hover {
+      color: #fff;
+    }
+
+    svg {
+      font-size: 25px;
+    }
+
     .component-name {
       display: block;
-      font-size: 12px;
     }
   }
 }

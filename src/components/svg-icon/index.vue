@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-interface Props {
-  name: {
-    type: string,
-    required: true,
-  },
-  color?: string,
-  size?: number,
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  color: '#b3b9bf',
-  size: 25,
-})
+const props = defineProps<{
+  name: string,
+}>()
 
 const symbolId = computed(() => `#icon-${props.name}`)
-const sizeStyle = computed(() => `${props.size}px`)
 </script>
 
 <template>
-  <svg aria-hidden="true" :style="{ width: sizeStyle, height: sizeStyle }">
-    <use :href="symbolId" :fill="props.color"/>
+  <svg aria-hidden="true" class="svg-icon">
+    <use :href="symbolId"/>
   </svg>
 </template>
+
+<style lang="less" scoped>
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+</style>
