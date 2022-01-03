@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import PageEditor from '@/components/page-editor/index.vue'
+import BPageEditor from '@/components/page-editor/BPageEditor.vue'
 </script>
 
 <template>
-  <PageEditor/>
+  <BPageEditor/>
 </template>

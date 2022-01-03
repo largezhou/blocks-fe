@@ -6,19 +6,18 @@ import {
   LayoutContent,
   LayoutFooter,
 } from 'ant-design-vue'
-
 </script>
 
 <template>
-  <Layout class="layout">
-    <LayoutSider class="layout-sider">
+  <Layout class="b-layout">
+    <LayoutSider class="b-layout-sider">
       <slot name="sider"/>
     </LayoutSider>
     <Layout :style="{ marginLeft: '200px' }">
-      <LayoutHeader class="layout-header">
+      <LayoutHeader class="b-layout-header">
         <slot name="header"/>
       </LayoutHeader>
-      <LayoutContent class="layout-content">
+      <LayoutContent class="b-layout-content">
         <div>
           <slot name="content"/>
         </div>
@@ -32,9 +31,9 @@ import {
   </Layout>
 </template>
 
-<style lang="less" scoped>
-.layout {
-  min-height: 100%;
+<style lang="less">
+.b-layout {
+  min-height: 100% !important;
 
   .layout-sider {
     overflow: auto;
@@ -44,12 +43,12 @@ import {
     color: white;
   }
 
-  .layout-header {
+  .b-layout-header {
     background: #fff;
     padding: 0;
   }
 
-  .layout-content {
+  .b-layout-content {
     margin: 24px 16px 0;
     overflow: initial;
 

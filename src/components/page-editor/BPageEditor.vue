@@ -1,35 +1,34 @@
 <script setup lang="ts">
-import Layout from '@/components/layout/index.vue'
-import SvgIcon from '@/components/svg-icon/index.vue'
-
+import BLayout from '@/components/layout/BLayout.vue'
+import BSvgIcon from '@/components/svg-icon/BSvgIcon.vue'
 </script>
 
 <template>
-  <Layout>
+  <BLayout>
     <template #sider>
-      <div class="components">
+      <div class="b-components">
         <div
           v-for="j in 20"
           :key="j"
-          class="component-item"
+          class="b-component-item"
         >
-          <SvgIcon name="component-input"/>
-          <span class="component-name">这是什么组件</span>
+          <BSvgIcon name="component-input"/>
+          <span class="b-component-name">这是什么组件</span>
         </div>
       </div>
     </template>
     <template #content/>
-  </Layout>
+  </BLayout>
 </template>
 
 <style lang="less">
-.components {
+.b-components {
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 
-  .component-item {
+  .b-component-item {
     display: inline-block;
     width: 70px;
     height: 70px;
@@ -45,7 +44,7 @@ import SvgIcon from '@/components/svg-icon/index.vue'
       font-size: 25px;
     }
 
-    .component-name {
+    .b-component-name {
       display: block;
     }
   }
