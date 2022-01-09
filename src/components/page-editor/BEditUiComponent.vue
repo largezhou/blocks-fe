@@ -9,12 +9,12 @@ export default defineComponent({
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue'
 import { Position } from '@/components/page-editor/typing'
-import { ISettingWithDefinition, IUIComponentSetting } from '@/components/components/typing'
+import { IComponentSetting, IUIComponentSetting } from '@/components/components/typing'
 import { addEvent } from '@/utils/util'
 import { useComponents } from '@/components/page-editor/components'
 
 const props = defineProps<{
-  component: ISettingWithDefinition
+  component: IComponentSetting
   componentIndex: number
 }>()
 

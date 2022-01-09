@@ -1,45 +1,37 @@
-import { ISettingWithDefinition, IUISettingWithInstance, PositionNumber } from '@/components/components/typing'
-import { Ref, ref, resolveComponent } from 'vue'
+import {
+  ChangePosition,
+  IUseComponents,
+  IUIComponentSetting,
+  IComponentSetting, HasUI,
+} from '@/components/components/typing'
+import { DefineComponent, ref, resolveComponent } from 'vue'
 
-type ChangePosition = (index: number, pos: PositionNumber) => void
-
-interface IUseComponents {
-  components: Ref<ISettingWithDefinition[]>
-  changePosition: ChangePosition
-}
-
-const components = ref<ISettingWithDefinition[]>([])
+const components = ref<IComponentSetting[]>([])
 components.value = [
-  <IUISettingWithInstance>{
+  <IUIComponentSetting>{
     id: 'b-button-1',
     name: 'BButton',
     left: 0,
     top: 0,
     width: 1,
     height: 1,
-    component: resolveComponent('BButton'),
-    hasUI: true,
   },
-  <IUISettingWithInstance>{
+  <IUIComponentSetting>{
     id: 'b-button-2',
     name: 'BButton',
     left: 0,
     top: 100,
     width: 1,
     height: 1,
-    component: resolveComponent('BButton'),
-    hasUI: true,
   },
-  <ISettingWithDefinition>{
+  <IComponentSetting>{
     id: 'b-interval-1',
     name: 'BInterval',
-    component: resolveComponent('BInterval'),
-    hasUI: false,
   },
 ]
 
 const changePosition: ChangePosition = (index, position) => {
-  const component = components.value[index] as IUISettingWithInstance
+  const component = components.value[index] as IUIComponentSetting
   if (component === undefined) {
     console.warn(`[ ${index} ] 组件不存在`)
     return
@@ -56,9 +48,18 @@ const changePosition: ChangePosition = (index, position) => {
   component.height = position.height || component.height
 }
 
+const hasUIMap: { [key: string]: boolean } = {}
+const hasUI: HasUI = (component) => {
+  if (hasUIMap[component.name] === undefined) {
+    hasUIMap[component.name] = typeof (resolveComponent(component.name) as DefineComponent).minWidthUnit === 'number'
+  }
+  return hasUIMap[component.name]
+}
+
 export const useComponents: () => IUseComponents = () => {
   return {
     components,
     changePosition,
+    hasUI,
   }
 }

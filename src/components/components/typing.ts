@@ -1,9 +1,4 @@
-import { DefineComponent } from '@vue/runtime-core'
-
-interface IWithComponentDefinition {
-  component?: DefineComponent
-  hasUI?: boolean
-}
+import { Ref } from 'vue'
 
 export interface IComponentSetting {
   /**
@@ -15,8 +10,6 @@ export interface IComponentSetting {
    */
   id: string
 }
-
-export type ISettingWithDefinition = IComponentSetting & IWithComponentDefinition
 
 export interface IUIComponentSetting extends IComponentSetting {
   /**
@@ -37,11 +30,17 @@ export interface IUIComponentSetting extends IComponentSetting {
   height: number
 }
 
-export type IUISettingWithInstance = IUIComponentSetting & ISettingWithDefinition
-
 export interface PositionNumber {
   left?: number
   top?: number
   width?: number
   height?: number
+}
+export type ChangePosition = (index: number, pos: PositionNumber) => void
+export type HasUI = (component: IComponentSetting) => boolean
+
+export interface IUseComponents {
+  components: Ref<IComponentSetting[]>
+  changePosition: ChangePosition
+  hasUI: HasUI
 }

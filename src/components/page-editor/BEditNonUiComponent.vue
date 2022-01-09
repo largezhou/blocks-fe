@@ -7,10 +7,10 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ISettingWithDefinition } from '@/components/components/typing'
+import { IComponentSetting } from '@/components/components/typing'
 
 defineProps<{
-  component: ISettingWithDefinition
+  component: IComponentSetting
 }>()
 </script>
 

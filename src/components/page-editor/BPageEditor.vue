@@ -13,8 +13,7 @@ import BEditUiComponent from '@/components/page-editor/BEditUiComponent.vue'
 import BEditNonUiComponent from '@/components/page-editor/BEditNonUiComponent.vue'
 import { useComponents } from '@/components/page-editor/components'
 
-const { components } = useComponents()
-window.tt = components
+const { components, hasUI } = useComponents()
 </script>
 
 <template>
@@ -38,7 +37,7 @@ window.tt = components
           :key="component.id"
         >
           <b-edit-ui-component
-            v-if="component.hasUI"
+            v-if="hasUI(component)"
             :component="component"
             :component-index="index"
           />
