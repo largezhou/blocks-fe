@@ -53,5 +53,7 @@ module.exports = {
         selfClosingTag: 'never',
       },
     ],
+    'import/first': 0,
+    'import/no-duplicates': 0,
   },
 }

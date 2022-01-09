@@ -1,41 +1,39 @@
-<script setup lang="ts">
-import {
-  Layout,
-  LayoutSider,
-  LayoutHeader,
-  LayoutContent,
-  LayoutFooter,
-} from 'ant-design-vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'BLayout',
+})
 </script>
 
 <template>
-  <Layout class="b-layout">
-    <LayoutSider class="b-layout-sider">
+  <a-layout class="b-layout">
+    <a-layout-sider class="b-layout-sider">
       <slot name="sider"/>
-    </LayoutSider>
-    <Layout :style="{ marginLeft: '200px' }">
-      <LayoutHeader class="b-layout-header">
+    </a-layout-sider>
+    <a-layout :style="{ marginLeft: '200px' }">
+      <a-layout-header class="b-layout-header">
         <slot name="header"/>
-      </LayoutHeader>
-      <LayoutContent class="b-layout-content">
+      </a-layout-header>
+      <a-layout-content class="b-layout-content">
         <div>
           <slot name="content"/>
         </div>
-      </LayoutContent>
-      <LayoutFooter :style="{ textAlign: 'center' }">
+      </a-layout-content>
+      <a-layout-footer :style="{ textAlign: 'center' }">
         <slot name="footer">
           Ant Design ©2018 Created by Ant UED
         </slot>
-      </LayoutFooter>
-    </Layout>
-  </Layout>
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
 </template>
 
 <style lang="less">
 .b-layout {
   min-height: 100% !important;
 
-  .layout-sider {
+  .b-layout-sider {
     overflow: auto;
     height: 100vh;
     position: fixed;
@@ -55,7 +53,6 @@ import {
     > div {
       padding: 24px;
       background: #fff;
-      text-align: center;
       min-height: 100%;
     }
   }
