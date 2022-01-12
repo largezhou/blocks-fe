@@ -8,26 +8,18 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue'
-import { Position } from '@/components/page-editor/typing'
-import { IComponentSetting, IUIComponentSetting } from '@/components/components/typing'
-import { addEvent } from '@/utils/util'
+import { PositionStyles } from '@/components/page-editor/typing'
+import { UIComponentSetting } from './typing'
+import { addEvent, convertPositionNumberToStyles, getOffsetPositionFrom } from '@/utils/util'
 import { useComponents } from '@/components/page-editor/components'
+import { usePlaceholder } from '@/components/page-editor/placeholder'
 
 const props = defineProps<{
-  component: IComponentSetting
+  component: UIComponentSetting
   componentIndex: number
 }>()
 
-const c: IUIComponentSetting = props.component as IUIComponentSetting
-
-const positionStyles = computed<Position>(() => {
-  return {
-    left: `${c.left}px`,
-    top: `${c.top}px`,
-    width: `${c.width * 75}px`,
-    height: `${c.height * 35}px`,
-  }
-})
+const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(props.component))
 
 /**
  * 是否在拖动
@@ -47,24 +39,48 @@ const onStartMove = (e: MouseEvent) => {
     return
   }
 
+  const {
+    left,
+    top,
+  } = getOffsetPositionFrom(e.currentTarget as HTMLElement, e.target as HTMLElement)
+  offsetX.value = e.offsetX + left
+  offsetY.value = e.offsetY + top
+
+  changePlaceholderPosition(props.component, true)
+
   isMoving.value = true
-  offsetX.value = e.offsetX
-  offsetY.value = e.offsetY
 }
-const { changePosition } = useComponents()
+const { changeComponentPosition } = useComponents()
+const {
+  changePlaceholderPosition,
+  placeholderPosition,
+} = usePlaceholder()
+
 const handleMoving = (e: MouseEvent) => {
-  changePosition(props.componentIndex, {
+  changeComponentPosition(props.component, {
     left: Math.max(e.clientX - offsetX.value - 240, 0),
     top: Math.max(e.clientY - offsetY.value - 112, 0),
   })
+
+  changePlaceholderPosition({
+    left: e.clientX - 240,
+    top: e.clientY - 112,
+  })
 }
+
 addEvent(onUnmounted, 'mousemove', (e: MouseEvent) => {
   if (isMoving.value) {
     handleMoving(e)
   }
 })
+
 addEvent(onUnmounted, 'mouseup', () => {
+  if (!isMoving.value) {
+    return
+  }
+
   isMoving.value = false
+  changeComponentPosition(props.component, placeholderPosition.value)
 })
 </script>
 
@@ -81,5 +97,6 @@ addEvent(onUnmounted, 'mouseup', () => {
 <style lang="less">
 .b-component {
   position: absolute;
+  padding: 2px;
 }
 </style>

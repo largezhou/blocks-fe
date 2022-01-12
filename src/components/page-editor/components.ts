@@ -1,65 +1,60 @@
-import {
-  ChangePosition,
-  IUseComponents,
-  IUIComponentSetting,
-  IComponentSetting, HasUI,
-} from '@/components/components/typing'
 import { DefineComponent, ref, resolveComponent } from 'vue'
 
-const components = ref<IComponentSetting[]>([])
+import {
+  UIComponentSetting,
+  ComponentSetting, PositionNumber,
+} from './typing'
+import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
+import { getValidNumber } from '@/utils/util'
+
+const components = ref<ComponentSetting[]>([])
 components.value = [
-  <IUIComponentSetting>{
+  {
     id: 'b-button-1',
     name: 'BButton',
-    left: 0,
+    left: 12,
     top: 0,
-    width: 1,
-    height: 1,
-  },
-  <IUIComponentSetting>{
+    width: 2 * GRID_WIDTH,
+    height: GRID_HEIGHT,
+  } as UIComponentSetting,
+  {
     id: 'b-button-2',
     name: 'BButton',
     left: 0,
     top: 100,
-    width: 1,
-    height: 1,
-  },
-  <IComponentSetting>{
+    width: GRID_WIDTH,
+    height: GRID_HEIGHT,
+  } as UIComponentSetting,
+  {
     id: 'b-interval-1',
     name: 'BInterval',
-  },
+  } as ComponentSetting,
 ]
 
-const changePosition: ChangePosition = (index, position) => {
-  const component = components.value[index] as IUIComponentSetting
-  if (component === undefined) {
-    console.warn(`[ ${index} ] 组件不存在`)
-    return
-  }
-
+const changeComponentPosition = (component: UIComponentSetting, position: PositionNumber): void => {
   if (typeof component.left !== 'number') {
-    console.warn(`[ ${index} ] 组件不是 UI 组件`)
+    console.warn('不是 UI 组件')
     return
   }
 
-  component.left = position.left || component.left
-  component.top = position.top || component.top
-  component.width = position.width || component.width
-  component.height = position.height || component.height
+  component.left = getValidNumber(position.left, component.left)
+  component.top = getValidNumber(position.top, component.top)
+  component.width = getValidNumber(position.width, component.width)
+  component.height = getValidNumber(position.height, component.height)
 }
 
 const hasUIMap: { [key: string]: boolean } = {}
-const hasUI: HasUI = (component) => {
+const componentHasUI = (component: ComponentSetting): boolean => {
   if (hasUIMap[component.name] === undefined) {
     hasUIMap[component.name] = typeof (resolveComponent(component.name) as DefineComponent).minWidthUnit === 'number'
   }
   return hasUIMap[component.name]
 }
 
-export const useComponents: () => IUseComponents = () => {
+export const useComponents = () => {
   return {
     components,
-    changePosition,
-    hasUI,
+    changeComponentPosition,
+    componentHasUI,
   }
 }

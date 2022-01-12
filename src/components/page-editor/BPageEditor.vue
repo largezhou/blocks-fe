@@ -12,8 +12,11 @@ import BSvgIcon from '@/components/svg-icon/BSvgIcon.vue'
 import BEditUiComponent from '@/components/page-editor/BEditUiComponent.vue'
 import BEditNonUiComponent from '@/components/page-editor/BEditNonUiComponent.vue'
 import { useComponents } from '@/components/page-editor/components'
+import BPlaceholder from '@/components/page-editor/BPlaceholder.vue'
+import { convertToChildType } from '@/utils/util'
 
-const { components, hasUI } = useComponents()
+const { components, componentHasUI } = useComponents()
+
 </script>
 
 <template>
@@ -32,13 +35,19 @@ const { components, hasUI } = useComponents()
     </template>
     <template #content>
       <div class="b-workspace">
+        <b-placeholder
+          :top="0"
+          :left="0"
+          :width="100"
+          :height="100"
+        />
         <template
           v-for="(component, index) in components"
           :key="component.id"
         >
           <b-edit-ui-component
-            v-if="hasUI(component)"
-            :component="component"
+            v-if="componentHasUI(component)"
+            :component="convertToChildType(component)"
             :component-index="index"
           />
           <b-edit-non-ui-component

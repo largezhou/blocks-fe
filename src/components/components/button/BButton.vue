@@ -36,6 +36,7 @@ const onClick = (e: MouseEvent) => {
 
 <template>
   <a-button
+    class="b-button"
     :type="type"
     :danger="danger"
     :disabled="disabled"
@@ -44,3 +45,9 @@ const onClick = (e: MouseEvent) => {
     {{ name }}
   </a-button>
 </template>
+
+<style lang="less">
+.b-button {
+  width: 100%;
+}
+</style>
