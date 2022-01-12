@@ -1,6 +1,6 @@
 import { PositionNumber, PositionStyles } from '@/components/page-editor/typing'
 import { computed, ComputedRef, Ref, ref } from 'vue'
-import { convertPositionNumberToStyles, getValidNumber } from '@/utils/util'
+import { convertPositionNumberToStyles } from '@/utils/util'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
 const placeholderPosition: Ref<PositionNumber> = ref({
@@ -19,8 +19,8 @@ const placeholderPositionStyles: ComputedRef<PositionStyles> = computed(() => co
  * @param specify 是否直接指定位置，指定位置时，不会吸附到网格上
  */
 const changePlaceholderPosition = (newPosition: PositionNumber, specify = false) => {
-  let left = getValidNumber(newPosition.left, placeholderPosition.value.left)
-  let top = getValidNumber(newPosition.top, placeholderPosition.value.top)
+  let left = newPosition.left ?? placeholderPosition.value.left ?? 0
+  let top = newPosition.top ?? placeholderPosition.value.top ?? 0
 
   if (!specify) {
     left = Math.floor(left / GRID_WIDTH) * GRID_WIDTH
@@ -29,8 +29,8 @@ const changePlaceholderPosition = (newPosition: PositionNumber, specify = false)
 
   placeholderPosition.value.left = left
   placeholderPosition.value.top = top
-  placeholderPosition.value.width = getValidNumber(newPosition.width, placeholderPosition.value.width)
-  placeholderPosition.value.height = getValidNumber(newPosition.height, placeholderPosition.value.height)
+  placeholderPosition.value.width = newPosition.width ?? placeholderPosition.value.width
+  placeholderPosition.value.height = newPosition.height ?? placeholderPosition.value.height
 }
 
 export const usePlaceholder = () => ({

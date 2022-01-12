@@ -13,7 +13,6 @@ import BEditUiComponent from '@/components/page-editor/BEditUiComponent.vue'
 import BEditNonUiComponent from '@/components/page-editor/BEditNonUiComponent.vue'
 import { useComponents } from '@/components/page-editor/components'
 import BPlaceholder from '@/components/page-editor/BPlaceholder.vue'
-import { convertToChildType } from '@/utils/util'
 
 const { components, componentHasUI } = useComponents()
 
@@ -47,7 +46,7 @@ const { components, componentHasUI } = useComponents()
         >
           <b-edit-ui-component
             v-if="componentHasUI(component)"
-            :component="convertToChildType(component)"
+            :component="component"
             :component-index="index"
           />
           <b-edit-non-ui-component

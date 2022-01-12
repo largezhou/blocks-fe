@@ -8,18 +8,17 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue'
-import { PositionStyles } from '@/components/page-editor/typing'
-import { UIComponentSetting } from './typing'
+import { ComponentSetting, PositionStyles, UIComponentSetting } from '@/components/page-editor/typing'
 import { addEvent, convertPositionNumberToStyles, getOffsetPositionFrom } from '@/utils/util'
 import { useComponents } from '@/components/page-editor/components'
 import { usePlaceholder } from '@/components/page-editor/placeholder'
 
 const props = defineProps<{
-  component: UIComponentSetting
+  component: ComponentSetting
   componentIndex: number
 }>()
 
-const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(props.component))
+const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(props.component as UIComponentSetting))
 
 /**
  * 是否在拖动
@@ -46,7 +45,7 @@ const onStartMove = (e: MouseEvent) => {
   offsetX.value = e.offsetX + left
   offsetY.value = e.offsetY + top
 
-  changePlaceholderPosition(props.component, true)
+  changePlaceholderPosition(props.component as UIComponentSetting, true)
 
   isMoving.value = true
 }
@@ -57,7 +56,7 @@ const {
 } = usePlaceholder()
 
 const handleMoving = (e: MouseEvent) => {
-  changeComponentPosition(props.component, {
+  changeComponentPosition(props.component as UIComponentSetting, {
     left: Math.max(e.clientX - offsetX.value - 240, 0),
     top: Math.max(e.clientY - offsetY.value - 112, 0),
   })
@@ -80,7 +79,7 @@ addEvent(onUnmounted, 'mouseup', () => {
   }
 
   isMoving.value = false
-  changeComponentPosition(props.component, placeholderPosition.value)
+  changeComponentPosition(props.component as UIComponentSetting, placeholderPosition.value)
 })
 </script>
 

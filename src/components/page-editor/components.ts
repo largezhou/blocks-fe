@@ -5,7 +5,6 @@ import {
   ComponentSetting, PositionNumber,
 } from './typing'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
-import { getValidNumber } from '@/utils/util'
 
 const components = ref<ComponentSetting[]>([])
 components.value = [
@@ -37,10 +36,10 @@ const changeComponentPosition = (component: UIComponentSetting, position: Positi
     return
   }
 
-  component.left = getValidNumber(position.left, component.left)
-  component.top = getValidNumber(position.top, component.top)
-  component.width = getValidNumber(position.width, component.width)
-  component.height = getValidNumber(position.height, component.height)
+  component.left = position.left ?? component.left
+  component.top = position.top ?? component.top
+  component.width = position.width ?? component.width
+  component.height = position.height ?? component.height
 }
 
 const hasUIMap: { [key: string]: boolean } = {}
