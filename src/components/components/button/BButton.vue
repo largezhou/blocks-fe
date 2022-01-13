@@ -27,6 +27,7 @@ withDefaults(
 interface Emits {
   (e: 'click', event: MouseEvent): void
 }
+
 const emit = defineEmits<Emits>()
 
 const onClick = (e: MouseEvent) => {
@@ -49,5 +50,6 @@ const onClick = (e: MouseEvent) => {
 <style lang="less">
 .b-button {
   width: 100%;
+  max-height: 100%;
 }
 </style>

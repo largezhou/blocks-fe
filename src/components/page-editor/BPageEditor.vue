@@ -41,13 +41,12 @@ const { components, componentHasUI } = useComponents()
           :height="100"
         />
         <template
-          v-for="(component, index) in components"
+          v-for="component in components"
           :key="component.id"
         >
           <b-edit-ui-component
             v-if="componentHasUI(component)"
             :component="component"
-            :component-index="index"
           />
           <b-edit-non-ui-component
             v-else
