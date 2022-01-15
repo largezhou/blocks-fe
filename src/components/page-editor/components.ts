@@ -20,7 +20,7 @@ components.value = [
     id: 'b-button-2',
     name: 'BButton',
     left: 0,
-    top: 100,
+    top: 3 * GRID_HEIGHT,
     width: GRID_WIDTH,
     height: GRID_HEIGHT,
   } as UIComponentSetting,
@@ -31,29 +31,21 @@ components.value = [
 ]
 
 const changeComponentPosition = (component: UIComponentSetting, position: PositionNumber): void => {
-  if (typeof component.left !== 'number') {
-    console.warn('不是 UI 组件')
-    return
-  }
-
   component.left = position.left ?? component.left
   component.top = position.top ?? component.top
   component.width = position.width ?? component.width
   component.height = position.height ?? component.height
 }
 
-const hasUIMap: { [key: string]: boolean } = {}
 const componentHasUI = (component: ComponentSetting): boolean => {
-  if (hasUIMap[component.name] === undefined) {
-    hasUIMap[component.name] = typeof (resolveComponent(component.name) as DefineComponent).minWidthUnit === 'number'
-  }
-  return hasUIMap[component.name]
+  const definition = resolveComponent(component.name) as DefineComponent
+  return (typeof definition.minWidthUnit === 'number') && (typeof definition.minHeightUnit === 'number')
 }
 
 export const useComponents = () => {
   return {
-    components,
-    changeComponentPosition,
-    componentHasUI,
+    components: components,
+    changeComponentPosition: changeComponentPosition,
+    componentHasUI: componentHasUI,
   }
 }

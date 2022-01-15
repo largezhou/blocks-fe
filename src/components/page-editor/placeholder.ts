@@ -18,16 +18,22 @@ const placeholderPositionStyles: ComputedRef<PositionStyles> = computed(() => co
  * @param position
  */
 const changePlaceholderPosition = (position: PositionNumber) => {
-  let left = position.left ?? placeholderPosition.value.left ?? 0
-  let top = position.top ?? placeholderPosition.value.top ?? 0
+  const positionKeys: (keyof PositionNumber)[] = ['top', 'left', 'width', 'height']
+  for (const key of positionKeys) {
+    const value = position[key]
+    if (typeof value !== 'number') {
+      continue
+    }
 
-  left = Math.round(left / GRID_WIDTH) * GRID_WIDTH
-  top = Math.round(top / GRID_HEIGHT) * GRID_HEIGHT
+    let gridValue
+    if (key === 'left' || key === 'width') {
+      gridValue = GRID_WIDTH
+    } else {
+      gridValue = GRID_HEIGHT
+    }
 
-  placeholderPosition.value.left = left
-  placeholderPosition.value.top = top
-  placeholderPosition.value.width = position.width ?? placeholderPosition.value.width
-  placeholderPosition.value.height = position.height ?? placeholderPosition.value.height
+    placeholderPosition.value[key] = Math.round(value / gridValue) * gridValue
+  }
 }
 
 export const usePlaceholder = () => ({

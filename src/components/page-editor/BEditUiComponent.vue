@@ -7,7 +7,13 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue'
+import {
+  computed,
+  DefineComponent,
+  onBeforeUnmount,
+  ref,
+  resolveComponent,
+} from 'vue'
 import {
   ComponentSetting,
   PositionNumber,
@@ -20,6 +26,7 @@ import {
 } from '@/utils/util'
 import { useComponents } from '@/components/page-editor/components'
 import { usePlaceholder } from '@/components/page-editor/placeholder'
+import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
 const props = defineProps<{
   component: ComponentSetting
@@ -62,13 +69,14 @@ const {
 
 const c = props.component as UIComponentSetting
 
-const startMove = (e: MouseEvent) => {
+const startMove = () => {
   isMoving.value = true
   changePlaceholderPosition(c)
 }
 
-const startResize = (e: MouseEvent) => {
+const startResize = () => {
   isResizing.value = true
+  changePlaceholderPosition(c)
 }
 
 const onMousedown = (e: MouseEvent) => {
@@ -85,64 +93,64 @@ const onMousedown = (e: MouseEvent) => {
   componentStartPosition.height = c.height
 
   if ((e.target as HTMLElement).classList.contains('b-resizer')) {
-    startResize(e)
+    startResize()
   } else {
-    startMove(e)
+    startMove()
   }
 }
 
 const { changeComponentPosition } = useComponents()
 
-const handleMoving = (e: MouseEvent) => {
-  const deltaX = e.clientX - mouseStartPosition.left
-  const deltaY = e.clientY - mouseStartPosition.top
-
+const handleMoving = (deltaX: number, deltaY: number) => {
   changeComponentPosition(props.component as UIComponentSetting, {
     left: Math.max(deltaX + componentStartPosition.left, 0),
     top: Math.max(deltaY + componentStartPosition.top, 0),
   })
 
-  changePlaceholderPosition(c)
+  changePlaceholderPosition({
+    top: c.top,
+    left: c.left,
+  })
 }
 
-const handleResizing = (e: MouseEvent) => {
-  log('resizing', e)
+const componentDefinition = resolveComponent(c.name) as DefineComponent
+const handleResizing = (deltaX: number, deltaY: number) => {
+  changeComponentPosition(props.component as UIComponentSetting, {
+    width: Math.max(componentStartPosition.width + deltaX, (componentDefinition?.minWidthUnit ?? 1) * GRID_WIDTH),
+    height: Math.max(componentStartPosition.height + deltaY, (componentDefinition?.minHeightUnit ?? 1) * GRID_HEIGHT),
+  })
+
+  changePlaceholderPosition({
+    width: c.width,
+    height: c.height,
+  })
 }
 
-addEvent(onUnmounted, 'mousemove', (e: MouseEvent) => {
+addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
+  const deltaX = e.clientX - mouseStartPosition.left
+  const deltaY = e.clientY - mouseStartPosition.top
+
   if (isMoving.value) {
-    handleMoving(e)
+    handleMoving(deltaX, deltaY)
   }
 
   if (isResizing.value) {
-    handleResizing(e)
+    handleResizing(deltaX, deltaY)
   }
 })
 
-const handleStopMove = () => {
-  isMoving.value = false
-
-  changeComponentPosition(c, placeholderPosition.value)
-}
-
-const handleStopResize = () => {
-  isResizing.value = false
-}
-
-addEvent(onUnmounted, 'mouseup', () => {
-  if (isMoving.value) {
-    handleStopMove()
-  }
-
-  if (isResizing.value) {
-    handleStopResize()
+addEvent(onBeforeUnmount, 'mouseup', () => {
+  if (isMoving.value || isResizing.value) {
+    isMoving.value = false
+    isResizing.value = false
+    changeComponentPosition(c, placeholderPosition.value)
   }
 })
 </script>
 
 <template>
   <div
-    class="b-component b-selected"
+    class="b-component"
     :style="{...positionStyles}"
     @mousedown.stop.prevent="onMousedown"
   >
@@ -161,9 +169,14 @@ addEvent(onUnmounted, 'mouseup', () => {
   &.b-selected {
     border: 2px #9cdfff dashed;
     padding: 2px;
+
+    .b-resizer {
+      display: block;
+    }
   }
 
   .b-resizer {
+    display: none;
     width: 10px;
     height: 10px;
     position: absolute;

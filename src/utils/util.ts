@@ -1,13 +1,12 @@
-import { onUnmounted } from 'vue'
 import { PositionNumber, PositionStyles } from '@/components/page-editor/typing'
 
 /**
  * 在 document 上添加事件，并在 unmounted 的时候移除
  */
-export const addEvent = (thisOnUnmounted: typeof onUnmounted, e: string, callback: (...args: any[]) => any): void => {
-  document.addEventListener(e, callback)
-  thisOnUnmounted(() => {
-    document.removeEventListener(e, callback)
+export const addEvent = (removeEventCallback: (...args: any[]) => any, e: string, eventCallback: (...args: any[]) => any): void => {
+  document.addEventListener(e, eventCallback)
+  removeEventCallback(() => {
+    document.removeEventListener(e, eventCallback)
   })
 }
 
