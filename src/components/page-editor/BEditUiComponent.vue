@@ -28,6 +28,17 @@ import { useComponents } from '@/components/page-editor/components'
 import { usePlaceholder } from '@/components/page-editor/placeholder'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
+const {
+  changeComponentPosition,
+  selectedId,
+  addSelected,
+} = useComponents()
+
+const {
+  changePlaceholderPosition,
+  placeholderPosition,
+} = usePlaceholder()
+
 const props = defineProps<{
   component: ComponentSetting
 }>()
@@ -62,12 +73,15 @@ const componentStartPosition: Required<PositionNumber> = {
   height: 0,
 }
 
-const {
-  changePlaceholderPosition,
-  placeholderPosition,
-} = usePlaceholder()
-
+/**
+ * 组件设置
+ */
 const c = props.component as UIComponentSetting
+
+/**
+ * 该组件是否已被选中
+ */
+const selected = computed(() => selectedId.value[c.id])
 
 const startMove = () => {
   isMoving.value = true
@@ -84,6 +98,8 @@ const onMousedown = (e: MouseEvent) => {
     return
   }
 
+  addSelected(true, [c.id])
+
   mouseStartPosition.left = e.clientX
   mouseStartPosition.top = e.clientY
 
@@ -98,8 +114,6 @@ const onMousedown = (e: MouseEvent) => {
     startMove()
   }
 }
-
-const { changeComponentPosition } = useComponents()
 
 const handleMoving = (deltaX: number, deltaY: number) => {
   changeComponentPosition(props.component as UIComponentSetting, {
@@ -150,7 +164,10 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
 
 <template>
   <div
-    class="b-component"
+    :class="{
+      'b-component': true,
+      'b-selected': selected
+    }"
     :style="{...positionStyles}"
     @mousedown.stop.prevent="onMousedown"
   >
@@ -160,15 +177,20 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
 </template>
 
 <style lang="less">
+@component-padding: 4px;
+
 .b-component {
   box-sizing: border-box;
   position: absolute;
-  padding: 4px;
+  padding: @component-padding;
   border-radius: 2px;
 
+  @selected-border: 1px;
+  @selected-padding: @component-padding - @selected-border;
+
   &.b-selected {
-    border: 2px #9cdfff dashed;
-    padding: 2px;
+    border: @selected-border #69c0ff solid;
+    padding: @selected-padding;
 
     .b-resizer {
       display: block;
@@ -177,14 +199,16 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
 
   .b-resizer {
     display: none;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     position: absolute;
-    bottom: -4px;
-    right: -4px;
-    border-radius: 2px;
-    background: red;
+    bottom: -3px;
+    right: -3px;
+    border-bottom-right-radius: 2px;
     cursor: se-resize;
+    border: 3px #69c0ff solid;
+    border-left: none;
+    border-top: none;
   }
 }
 </style>

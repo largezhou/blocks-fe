@@ -2,7 +2,8 @@ import { DefineComponent, ref, resolveComponent } from 'vue'
 
 import {
   UIComponentSetting,
-  ComponentSetting, PositionNumber,
+  ComponentSetting,
+  PositionNumber,
 } from './typing'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
@@ -42,10 +43,27 @@ const componentHasUI = (component: ComponentSetting): boolean => {
   return (typeof definition.minWidthUnit === 'number') && (typeof definition.minHeightUnit === 'number')
 }
 
+/**
+ * 当前被选中的组件 ID
+ */
+const selectedId = ref<{ [key: string]: true }>({})
+
+const addSelected = (replace: boolean, keys: string[]): void => {
+  if (replace) {
+    selectedId.value = {}
+  }
+
+  keys.forEach((k) => {
+    selectedId.value[k] = true
+  })
+}
+
 export const useComponents = () => {
   return {
     components: components,
     changeComponentPosition: changeComponentPosition,
     componentHasUI: componentHasUI,
+    selectedId: selectedId,
+    addSelected: addSelected,
   }
 }
