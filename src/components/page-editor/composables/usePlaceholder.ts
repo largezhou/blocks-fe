@@ -36,8 +36,8 @@ const changePlaceholderPosition = (position: PositionNumber) => {
   }
 }
 
-export const usePlaceholder = () => ({
-  changePlaceholderPosition: changePlaceholderPosition,
-  placeholderPositionStyles: placeholderPositionStyles,
-  placeholderPosition: placeholderPosition,
+export default () => ({
+  changePlaceholderPosition,
+  placeholderPositionStyles,
+  placeholderPosition,
 })

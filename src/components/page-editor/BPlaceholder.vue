@@ -7,7 +7,7 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { usePlaceholder } from '@/components/page-editor/placeholder'
+import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 
 const { placeholderPositionStyles } = usePlaceholder()
 </script>

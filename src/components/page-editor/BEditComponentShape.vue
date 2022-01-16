@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'BEditUIComponent',
+  name: 'BEditComponentShape',
 })
 </script>
 
@@ -24,8 +24,8 @@ import {
   addEvent,
   convertPositionNumberToStyles,
 } from '@/utils/util'
-import { useComponents } from '@/components/page-editor/components'
-import { usePlaceholder } from '@/components/page-editor/placeholder'
+import useComponents from '@/components/page-editor/composables/useComponents'
+import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
 const {

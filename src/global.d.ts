@@ -1,7 +1,7 @@
-declare const log: (...data: any[]) => void
+declare const log: typeof console.log
 
 interface Window {
-  log: (...data: any[]) => void
+  log: typeof console.log
   plugins: any
 
   [key: string]: any

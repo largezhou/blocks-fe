@@ -4,7 +4,7 @@ import {
   UIComponentSetting,
   ComponentSetting,
   PositionNumber,
-} from './typing'
+} from '@/components/page-editor/typing'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
 const components = ref<ComponentSetting[]>([])
@@ -58,12 +58,12 @@ const addSelected = (replace: boolean, keys: string[]): void => {
   })
 }
 
-export const useComponents = () => {
+export default () => {
   return {
-    components: components,
-    changeComponentPosition: changeComponentPosition,
-    componentHasUI: componentHasUI,
-    selectedId: selectedId,
-    addSelected: addSelected,
+    components,
+    changeComponentPosition,
+    componentHasUI,
+    selectedId,
+    addSelected,
   }
 }

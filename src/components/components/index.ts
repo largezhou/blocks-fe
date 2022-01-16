@@ -1,5 +1,5 @@
-import BButton from './button/BButton.vue'
-import BInterval from './interval/BInterval.vue'
+import BButton from '@/components/components/button/BButton.vue'
+import BInterval from '@/components/components/interval/BInterval.vue'
 import { App } from 'vue'
 
 const components = [

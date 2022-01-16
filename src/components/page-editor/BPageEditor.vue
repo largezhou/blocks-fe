@@ -9,9 +9,8 @@ export default defineComponent({
 <script setup lang="ts">
 import BLayout from '@/components/layout/BLayout.vue'
 import BSvgIcon from '@/components/svg-icon/BSvgIcon.vue'
-import BEditUiComponent from '@/components/page-editor/BEditUiComponent.vue'
-import BEditNonUiComponent from '@/components/page-editor/BEditNonUiComponent.vue'
-import { useComponents } from '@/components/page-editor/components'
+import BEditComponentShape from '@/components/page-editor/BEditComponentShape.vue'
+import useComponents from '@/components/page-editor/composables/useComponents'
 import BPlaceholder from '@/components/page-editor/BPlaceholder.vue'
 
 const { components, componentHasUI } = useComponents()
@@ -34,22 +33,13 @@ const { components, componentHasUI } = useComponents()
     </template>
     <template #content>
       <div class="b-workspace">
-        <b-placeholder
-          :top="0"
-          :left="0"
-          :width="100"
-          :height="100"
-        />
+        <b-placeholder/>
         <template
           v-for="component in components"
           :key="component.id"
         >
-          <b-edit-ui-component
+          <b-edit-component-shape
             v-if="componentHasUI(component)"
-            :component="component"
-          />
-          <b-edit-non-ui-component
-            v-else
             :component="component"
           />
         </template>
