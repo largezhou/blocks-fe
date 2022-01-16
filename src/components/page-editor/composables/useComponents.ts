@@ -8,27 +8,55 @@ import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
 
 export default () => {
   const components = ref<ComponentSetting[]>([])
+
+  const a: UIComponentSetting = {
+    id: 'b-input-1',
+    name: 'BInput',
+    setting: {
+      label: '请输入姓名',
+      placeholder: '',
+      extra: '支持模糊搜索',
+    },
+
+    left: 0,
+    top: 0,
+    width: 3 * GRID_WIDTH,
+    height: 2 * GRID_HEIGHT,
+  }
+  const b: UIComponentSetting = {
+    id: 'b-button-1',
+    name: 'BButton',
+    setting: {
+      danger: true,
+      text: '删除',
+    },
+    left: 0,
+    top: 2 * GRID_HEIGHT,
+    width: GRID_WIDTH,
+    height: GRID_HEIGHT,
+  }
+  const c: UIComponentSetting = {
+    id: 'b-button-2',
+    name: 'BButton',
+    setting: {
+      type: 'default',
+      text: '上传文件',
+    },
+    left: GRID_WIDTH,
+    top: 2 * GRID_HEIGHT,
+    width: 2 * GRID_WIDTH,
+    height: GRID_HEIGHT,
+  }
+
   components.value = [
-    {
-      id: 'b-button-1',
-      name: 'BButton',
-      left: 12,
-      top: 0,
-      width: 2 * GRID_WIDTH,
-      height: GRID_HEIGHT,
-    } as UIComponentSetting,
-    {
-      id: 'b-button-2',
-      name: 'BButton',
-      left: 0,
-      top: 3 * GRID_HEIGHT,
-      width: GRID_WIDTH,
-      height: GRID_HEIGHT,
-    } as UIComponentSetting,
+    a,
+    b,
+    c,
     {
       id: 'b-interval-1',
       name: 'BInterval',
-    } as ComponentSetting,
+      setting: {},
+    },
   ]
 
   const changeComponentPosition = (component: UIComponentSetting, position: PositionNumber): void => {

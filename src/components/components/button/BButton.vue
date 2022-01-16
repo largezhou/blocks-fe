@@ -3,21 +3,23 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'BButton',
+  showName: '按钮',
   minWidthUnit: 1,
   minHeightUnit: 1,
+  icon: 'button',
 })
 </script>
 
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    name?: string,
+    text?: string,
     type?: 'primary' | 'text' | 'default',
     danger?: boolean,
     disabled?: boolean,
   }>(),
   {
-    name: '按钮',
+    text: '按钮',
     type: 'primary',
     danger: false,
     disabled: false,
@@ -43,7 +45,7 @@ const onClick = (e: MouseEvent) => {
     :disabled="disabled"
     @click="onClick"
   >
-    {{ name }}
+    {{ text }}
   </a-button>
 </template>
 

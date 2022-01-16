@@ -160,7 +160,10 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
     :style="{...positionStyles}"
     @mousedown.stop.prevent="onMousedown"
   >
-    <component :is="component.name"/>
+    <component
+      :is="component.name"
+      v-bind="component.setting"
+    />
     <div class="b-resizer"/>
   </div>
 </template>

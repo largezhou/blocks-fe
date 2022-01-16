@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'BInterval',
+  showName: '轮询',
 })
 </script>
 

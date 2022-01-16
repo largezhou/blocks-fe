@@ -21,6 +21,10 @@ export interface ComponentSetting {
    * 唯一 ID
    */
   id: string
+  /**
+   * 组件的配置
+   */
+  setting: Record<string, unknown>
 }
 
 export interface UIComponentSetting extends ComponentSetting, Required<PositionNumber> {
