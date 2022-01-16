@@ -9,11 +9,39 @@ export default defineComponent({
 <script setup lang="ts">
 import BLayout from '@/components/layout/BLayout.vue'
 import BSvgIcon from '@/components/svg-icon/BSvgIcon.vue'
-import BEditComponentShape from '@/components/page-editor/BEditComponentShape.vue'
+import BEditComponentPosition from '@/components/page-editor/BEditComponentPosition.vue'
 import useComponents from '@/components/page-editor/composables/useComponents'
 import BPlaceholder from '@/components/page-editor/BPlaceholder.vue'
+import { PositionNumber, UIComponentSetting } from '@/components/page-editor/typing'
+import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 
-const { components, componentHasUI } = useComponents()
+const {
+  components,
+  componentHasUI,
+  changeComponentPosition,
+  addSelected,
+  selectedId,
+} = useComponents()
+
+const {
+  changePlaceholderPosition,
+  placeholderPosition,
+  placeholderPositionStyles,
+} = usePlaceholder()
+
+const onUpdatePosition = (component: UIComponentSetting, position: Required<PositionNumber>): void => {
+  changeComponentPosition(component, position)
+  changePlaceholderPosition(position)
+}
+
+const onStop = (component: UIComponentSetting): void => {
+  changeComponentPosition(component, placeholderPosition.value)
+}
+
+const onStart = (component: UIComponentSetting): void => {
+  addSelected(true, component.id)
+  changePlaceholderPosition(component)
+}
 
 </script>
 
@@ -33,14 +61,18 @@ const { components, componentHasUI } = useComponents()
     </template>
     <template #content>
       <div class="b-workspace">
-        <b-placeholder/>
+        <b-placeholder :position-styles="placeholderPositionStyles"/>
         <template
           v-for="component in components"
           :key="component.id"
         >
-          <b-edit-component-shape
+          <b-edit-component-position
             v-if="componentHasUI(component)"
             :component="component"
+            :selected-id="selectedId"
+            @update-position="onUpdatePosition"
+            @stop="onStop"
+            @start="onStart"
           />
         </template>
       </div>

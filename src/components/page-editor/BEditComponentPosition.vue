@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'BEditComponentShape',
+  name: 'BEditComponentPosition',
 })
 </script>
 
@@ -24,26 +24,29 @@ import {
   addEvent,
   convertPositionNumberToStyles,
 } from '@/utils/util'
-import useComponents from '@/components/page-editor/composables/useComponents'
-import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
-
-const {
-  changeComponentPosition,
-  selectedId,
-  addSelected,
-} = useComponents()
-
-const {
-  changePlaceholderPosition,
-  placeholderPosition,
-} = usePlaceholder()
 
 const props = defineProps<{
   component: ComponentSetting
+  selectedId: { [key: string]: true }
 }>()
 
-const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(props.component as UIComponentSetting))
+interface Emits {
+  (e: 'start', component: UIComponentSetting): void
+
+  (e: 'update-position', component: UIComponentSetting, position: Required<PositionNumber>): void
+
+  (e: 'stop', component: UIComponentSetting): void
+}
+
+const emit = defineEmits<Emits>()
+
+/**
+ * 组件设置
+ */
+const c = props.component as UIComponentSetting
+
+const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(c))
 
 /**
  * 是否在拖动
@@ -74,31 +77,22 @@ const componentStartPosition: Required<PositionNumber> = {
 }
 
 /**
- * 组件设置
- */
-const c = props.component as UIComponentSetting
-
-/**
  * 该组件是否已被选中
  */
-const selected = computed(() => selectedId.value[c.id])
+const selected = computed(() => props.selectedId[c.id])
 
 const startMove = () => {
   isMoving.value = true
-  changePlaceholderPosition(c)
 }
 
 const startResize = () => {
   isResizing.value = true
-  changePlaceholderPosition(c)
 }
 
 const onMousedown = (e: MouseEvent) => {
   if (e.buttons !== 1) {
     return
   }
-
-  addSelected(true, [c.id])
 
   mouseStartPosition.left = e.clientX
   mouseStartPosition.top = e.clientY
@@ -108,6 +102,7 @@ const onMousedown = (e: MouseEvent) => {
   componentStartPosition.width = c.width
   componentStartPosition.height = c.height
 
+  emit('start', c)
   if ((e.target as HTMLElement).classList.contains('b-resizer')) {
     startResize()
   } else {
@@ -116,27 +111,21 @@ const onMousedown = (e: MouseEvent) => {
 }
 
 const handleMoving = (deltaX: number, deltaY: number) => {
-  changeComponentPosition(props.component as UIComponentSetting, {
+  emit('update-position', c, {
     left: Math.max(deltaX + componentStartPosition.left, 0),
     top: Math.max(deltaY + componentStartPosition.top, 0),
-  })
-
-  changePlaceholderPosition({
-    top: c.top,
-    left: c.left,
+    width: c.width,
+    height: c.height,
   })
 }
 
 const componentDefinition = resolveComponent(c.name) as DefineComponent
 const handleResizing = (deltaX: number, deltaY: number) => {
-  changeComponentPosition(props.component as UIComponentSetting, {
+  emit('update-position', c, {
+    left: c.left,
+    top: c.top,
     width: Math.max(componentStartPosition.width + deltaX, (componentDefinition?.minWidthUnit ?? 1) * GRID_WIDTH),
     height: Math.max(componentStartPosition.height + deltaY, (componentDefinition?.minHeightUnit ?? 1) * GRID_HEIGHT),
-  })
-
-  changePlaceholderPosition({
-    width: c.width,
-    height: c.height,
   })
 }
 
@@ -157,7 +146,7 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
   if (isMoving.value || isResizing.value) {
     isMoving.value = false
     isResizing.value = false
-    changeComponentPosition(c, placeholderPosition.value)
+    emit('stop', c)
   }
 })
 </script>

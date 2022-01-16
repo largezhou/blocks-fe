@@ -7,15 +7,17 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
+import { PositionStyles } from '@/components/page-editor/typing'
 
-const { placeholderPositionStyles } = usePlaceholder()
+defineProps<{
+  positionStyles: PositionStyles
+}>()
 </script>
 
 <template>
   <div
     class="b-placeholder"
-    :style="{...placeholderPositionStyles}"
+    :style="{...positionStyles}"
   />
 </template>
 
