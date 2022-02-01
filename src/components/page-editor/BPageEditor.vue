@@ -15,13 +15,16 @@ import { PositionNumber, UIComponentSetting } from '@/components/page-editor/typ
 import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 import BComponentsPanel from '@/components/page-editor/BComponentsPanel.vue'
 import useComponentsPanel from '@/components/page-editor/composables/useComponentsPanel'
+import { componentHasUI, getComponentDefinition } from '@/utils/util'
+import { DefineComponent, getCurrentInstance, ref, resolveComponent } from 'vue'
 
 const {
   components,
-  componentHasUI,
   changeComponentPosition,
   addSelected,
   selectedId,
+  makeNewUIComponentSetting,
+  addNewComponent,
 } = useComponents()
 
 const {
@@ -40,12 +43,47 @@ const onUpdatePosition = (component: UIComponentSetting, position: Required<Posi
 }
 
 const onStop = (component: UIComponentSetting): void => {
-  changeComponentPosition(component, placeholderPosition.value)
+  if (component.isNew) {
+    newUIComponentSetting.value = undefined
+    if (placeholderPosition.value.left >= 0 && placeholderPosition.value.top >= 0) {
+      addNewComponent(component, placeholderPosition.value)
+    }
+  } else {
+    changeComponentPosition(component, placeholderPosition.value)
+  }
+
+  changePlaceholderPosition({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  })
 }
 
 const onStart = (component: UIComponentSetting): void => {
   addSelected(true, component.id)
   changePlaceholderPosition(component)
+}
+
+const newUIComponentSetting = ref<UIComponentSetting>()
+const newComponentStartDragEvent = ref<MouseEvent>()
+const instance = getCurrentInstance()
+const onStartNewComponent = (e: MouseEvent, name: string): void => {
+  const cd = getComponentDefinition(instance, name)
+  if (!cd) {
+    console.warn('组件不存在', name)
+    return
+  }
+  newUIComponentSetting.value = makeNewUIComponentSetting(cd, {
+    left: e.clientX - 240,
+    top: e.clientY - 112,
+  })
+  newComponentStartDragEvent.value = e
+  addSelected(true, (newUIComponentSetting.value as UIComponentSetting).id)
+}
+
+const hasUI = (name: string): boolean => {
+  return componentHasUI(resolveComponent(name) as DefineComponent)
 }
 
 </script>
@@ -55,6 +93,7 @@ const onStart = (component: UIComponentSetting): void => {
     <template #sider>
       <b-components-panel
         :components="availableComponents"
+        @start="onStartNewComponent"
       />
     </template>
     <template #content>
@@ -65,7 +104,7 @@ const onStart = (component: UIComponentSetting): void => {
           :key="component.id"
         >
           <b-edit-component-position
-            v-if="componentHasUI(component)"
+            v-if="hasUI(component.name)"
             :component="component"
             :selected-id="selectedId"
             @update-position="onUpdatePosition"
@@ -73,6 +112,15 @@ const onStart = (component: UIComponentSetting): void => {
             @start="onStart"
           />
         </template>
+
+        <b-edit-component-position
+          v-if="newUIComponentSetting !== undefined"
+          :component="newUIComponentSetting"
+          :selected-id="selectedId"
+          :start-drag-event="newComponentStartDragEvent"
+          @update-position="onUpdatePosition"
+          @stop="onStop"
+        />
       </div>
     </template>
   </b-layout>

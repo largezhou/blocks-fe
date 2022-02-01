@@ -11,7 +11,8 @@ export default () => {
     height: 0,
   })
 
-  const placeholderPositionStyles: ComputedRef<PositionStyles> = computed(() => convertPositionNumberToStyles(placeholderPosition.value))
+  const placeholderPositionStyles: ComputedRef<PositionStyles>
+    = computed(() => convertPositionNumberToStyles(placeholderPosition.value))
 
   /**
    * 修改占位元素的位置
@@ -20,6 +21,7 @@ export default () => {
    */
   const changePlaceholderPosition = (position: PositionNumber) => {
     const positionKeys: (keyof PositionNumber)[] = ['top', 'left', 'width', 'height']
+    const realPosition: PositionNumber = {}
     for (const key of positionKeys) {
       const value = position[key]
       if (typeof value !== 'number') {
@@ -33,8 +35,18 @@ export default () => {
         gridValue = GRID_HEIGHT
       }
 
-      placeholderPosition.value[key] = Math.round(value / gridValue) * gridValue
+      realPosition[key] = Math.round(value / gridValue) * gridValue
     }
+
+    if (
+      (realPosition.left !== undefined && realPosition.left < 0)
+      || (realPosition.top !== undefined && realPosition.top < 0)
+    ) {
+      realPosition.width = 0
+      realPosition.height = 0
+    }
+
+    placeholderPosition.value = Object.assign(placeholderPosition.value, realPosition)
   }
 
   return {

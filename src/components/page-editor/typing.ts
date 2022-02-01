@@ -25,6 +25,10 @@ export interface ComponentSetting {
    * 组件的配置
    */
   setting: Record<string, unknown>
+  /**
+   * 新增的暂未落地的组件
+   */
+  isNew?: true
 }
 
 export interface UIComponentSetting extends ComponentSetting, Required<PositionNumber> {

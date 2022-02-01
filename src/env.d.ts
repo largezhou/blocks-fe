@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 declare module '*.vue' {
-  import { BDefineComponent } from '@/typing'
-  const component: BDefineComponent
+  import { DefineComponent } from 'vue'
+  const component: DefineComponent
   export default component
 }

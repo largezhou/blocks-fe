@@ -24,11 +24,15 @@ import {
   addEvent,
   convertPositionNumberToStyles,
 } from '@/utils/util'
-import { GRID_HEIGHT, GRID_WIDTH } from '@/lib/constants'
+import { GRID_HEIGHT, GRID_WIDTH, LAZY_DELTA } from '@/lib/constants'
 
 const props = defineProps<{
   component: ComponentSetting
   selectedId: { [key: string]: true }
+  /**
+   * 从组件面板拖出组件时的鼠标事件
+   */
+  startDragEvent?: MouseEvent
 }>()
 
 interface Emits {
@@ -110,10 +114,17 @@ const onMousedown = (e: MouseEvent) => {
   }
 }
 
+if (c.isNew) {
+  onMousedown(props.startDragEvent as MouseEvent)
+}
+
 const handleMoving = (deltaX: number, deltaY: number) => {
+  const left = deltaX + componentStartPosition.left
+  const top = deltaY + componentStartPosition.top
+
   emit('update-position', c, {
-    left: Math.max(deltaX + componentStartPosition.left, 0),
-    top: Math.max(deltaY + componentStartPosition.top, 0),
+    left: c.isNew ? left : Math.max(left, 0),
+    top: c.isNew ? top : Math.max(top, 0),
     width: c.width,
     height: c.height,
   })
@@ -133,7 +144,10 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
   const deltaX = e.clientX - mouseStartPosition.left
   const deltaY = e.clientY - mouseStartPosition.top
 
-  if (isMoving.value) {
+  if (
+    isMoving.value
+    && (Math.abs(deltaX) > LAZY_DELTA || Math.abs(deltaY) > LAZY_DELTA)
+  ) {
     handleMoving(deltaX, deltaY)
   }
 
@@ -181,7 +195,7 @@ addEvent(onBeforeUnmount, 'mouseup', () => {
   @selected-padding: @component-padding - @selected-border;
 
   &.b-selected {
-    border: @selected-border #69c0ff solid;
+    border: @selected-border #bae7ff solid;
     padding: @selected-padding;
 
     .b-resizer {

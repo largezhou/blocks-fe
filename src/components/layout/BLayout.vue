@@ -16,7 +16,7 @@ export default defineComponent({
         <slot name="header"/>
       </a-layout-header>
       <a-layout-content class="b-layout-content">
-        <div>
+        <div class="b-layout-content-inner">
           <slot name="content"/>
         </div>
       </a-layout-content>
@@ -49,12 +49,12 @@ export default defineComponent({
   .b-layout-content {
     margin: 24px 16px 0;
     overflow: initial;
+  }
 
-    > div {
-      padding: 24px;
-      background: #fff;
-      min-height: 100%;
-    }
+  .b-layout-content-inner {
+    padding: 24px;
+    background: #fff;
+    min-height: 100%;
   }
 }
 </style>
