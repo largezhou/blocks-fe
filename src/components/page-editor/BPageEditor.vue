@@ -60,9 +60,8 @@ const onStop = (component: UIComponentSetting): void => {
   })
 }
 
-const onStart = (component: UIComponentSetting): void => {
+const onSelect = (component: UIComponentSetting): void => {
   addSelected(true, component.id)
-  changePlaceholderPosition(component)
 }
 
 const newUIComponentSetting = ref<UIComponentSetting>()
@@ -109,7 +108,7 @@ const hasUI = (name: string): boolean => {
             :selected-id="selectedId"
             @update-position="onUpdatePosition"
             @stop="onStop"
-            @start="onStart"
+            @select="onSelect"
           />
         </template>
 

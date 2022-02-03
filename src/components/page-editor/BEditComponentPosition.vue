@@ -36,11 +36,11 @@ const props = defineProps<{
 }>()
 
 interface Emits {
-  (e: 'start', component: UIComponentSetting): void
-
   (e: 'update-position', component: UIComponentSetting, position: Required<PositionNumber>): void
 
   (e: 'stop', component: UIComponentSetting): void
+
+  (e: 'select', component: UIComponentSetting): void
 }
 
 const emit = defineEmits<Emits>()
@@ -51,6 +51,8 @@ const emit = defineEmits<Emits>()
 const c = props.component as UIComponentSetting
 
 const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(c))
+
+const isMousedown = ref(false)
 
 /**
  * 是否在拖动
@@ -85,14 +87,6 @@ const componentStartPosition: Required<PositionNumber> = {
  */
 const selected = computed(() => props.selectedId[c.id])
 
-const startMove = () => {
-  isMoving.value = true
-}
-
-const startResize = () => {
-  isResizing.value = true
-}
-
 const onMousedown = (e: MouseEvent) => {
   if (e.buttons !== 1) {
     return
@@ -106,12 +100,9 @@ const onMousedown = (e: MouseEvent) => {
   componentStartPosition.width = c.width
   componentStartPosition.height = c.height
 
-  emit('start', c)
-  if ((e.target as HTMLElement).classList.contains('b-resizer')) {
-    startResize()
-  } else {
-    startMove()
-  }
+  isMousedown.value = true
+
+  emit('select', c)
 }
 
 if (c.isNew) {
@@ -141,6 +132,20 @@ const handleResizing = (deltaX: number, deltaY: number) => {
 }
 
 addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
+  if (!isMousedown.value) {
+    return
+  }
+
+  // 按下鼠标，首次开始移动时，判断是拖动组件还是缩放组件
+  // 并把组件标记为正在拖动或者正在缩放
+  if (!isResizing.value || isMoving.value) {
+    if ((e.target as HTMLElement).classList.contains('b-resizer')) {
+      isResizing.value = true
+    } else {
+      isMoving.value = true
+    }
+  }
+
   const deltaX = e.clientX - mouseStartPosition.left
   const deltaY = e.clientY - mouseStartPosition.top
 
@@ -157,6 +162,7 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
 })
 
 addEvent(onBeforeUnmount, 'mouseup', () => {
+  isMousedown.value = false
   if (isMoving.value || isResizing.value) {
     isMoving.value = false
     isResizing.value = false

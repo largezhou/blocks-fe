@@ -53,5 +53,6 @@ const onClick = (e: MouseEvent) => {
 .b-button {
   width: 100%;
   max-height: 100%;
+  overflow-x: hidden;
 }
 </style>
