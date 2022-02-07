@@ -65,6 +65,11 @@ const isMoving = ref(false)
 const isResizing = ref(false)
 
 /**
+ * 鼠标移动时，是拖动元素还是缩放元素
+ */
+const changeType = ref<'move' | 'resize'>()
+
+/**
  * 开始拖动时，记录鼠标的位置，用于计算拖动时，鼠标横向竖向移动的距离
  */
 const mouseStartPosition: Required<Pick<PositionNumber, 'left' | 'top'>> = {
@@ -138,11 +143,11 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
 
   // 按下鼠标，首次开始移动时，判断是拖动组件还是缩放组件
   // 并把组件标记为正在拖动或者正在缩放
-  if (!isResizing.value || isMoving.value) {
+  if (changeType.value === undefined) {
     if ((e.target as HTMLElement).classList.contains('b-resizer')) {
-      isResizing.value = true
+      changeType.value = 'resize'
     } else {
-      isMoving.value = true
+      changeType.value = 'move'
     }
   }
 
@@ -150,24 +155,26 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
   const deltaY = e.clientY - mouseStartPosition.top
 
   if (
-    isMoving.value
+    (changeType.value === 'move')
     && (Math.abs(deltaX) > LAZY_DELTA || Math.abs(deltaY) > LAZY_DELTA)
   ) {
+    isMoving.value = true
     handleMoving(deltaX, deltaY)
-  }
-
-  if (isResizing.value) {
+  } else if (changeType.value === 'resize') {
+    isResizing.value = true
     handleResizing(deltaX, deltaY)
   }
 })
 
 addEvent(onBeforeUnmount, 'mouseup', () => {
-  isMousedown.value = false
   if (isMoving.value || isResizing.value) {
-    isMoving.value = false
-    isResizing.value = false
     emit('stop', c)
   }
+
+  isMousedown.value = false
+  changeType.value = undefined
+  isMoving.value = false
+  isResizing.value = false
 })
 </script>
 
