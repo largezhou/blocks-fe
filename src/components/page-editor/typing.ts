@@ -33,3 +33,5 @@ export interface ComponentSetting {
 
 export interface UIComponentSetting extends ComponentSetting, Required<PositionNumber> {
 }
+
+export type MoveType = 'move' | 'resize' | undefined

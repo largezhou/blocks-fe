@@ -19,6 +19,7 @@ import {
   PositionNumber,
   PositionStyles,
   UIComponentSetting,
+  MoveType,
 } from '@/components/page-editor/typing'
 import {
   addEvent,
@@ -55,19 +56,14 @@ const positionStyles = computed<PositionStyles>(() => convertPositionNumberToSty
 const isMousedown = ref(false)
 
 /**
- * 是否在拖动
+ * 鼠标移动时，是拖动还是缩放
  */
-const isMoving = ref(false)
+const mouseMovingType = ref<MoveType>()
 
 /**
- * 是否在缩放
+ * 鼠标开始移动时，是拖动元素还是缩放元素
  */
-const isResizing = ref(false)
-
-/**
- * 鼠标移动时，是拖动元素还是缩放元素
- */
-const changeType = ref<'move' | 'resize'>()
+const mouseMoveType = ref<MoveType>()
 
 /**
  * 开始拖动时，记录鼠标的位置，用于计算拖动时，鼠标横向竖向移动的距离
@@ -142,12 +138,11 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
   }
 
   // 按下鼠标，首次开始移动时，判断是拖动组件还是缩放组件
-  // 并把组件标记为正在拖动或者正在缩放
-  if (changeType.value === undefined) {
+  if (mouseMoveType.value === undefined) {
     if ((e.target as HTMLElement).classList.contains('b-resizer')) {
-      changeType.value = 'resize'
+      mouseMoveType.value = 'resize'
     } else {
-      changeType.value = 'move'
+      mouseMoveType.value = 'move'
     }
   }
 
@@ -155,26 +150,25 @@ addEvent(onBeforeUnmount, 'mousemove', (e: MouseEvent) => {
   const deltaY = e.clientY - mouseStartPosition.top
 
   if (
-    (changeType.value === 'move')
+    (mouseMoveType.value === 'move')
     && (Math.abs(deltaX) > LAZY_DELTA || Math.abs(deltaY) > LAZY_DELTA)
   ) {
-    isMoving.value = true
+    mouseMovingType.value = 'move'
     handleMoving(deltaX, deltaY)
-  } else if (changeType.value === 'resize') {
-    isResizing.value = true
+  } else if (mouseMoveType.value === 'resize') {
+    mouseMovingType.value = 'resize'
     handleResizing(deltaX, deltaY)
   }
 })
 
 addEvent(onBeforeUnmount, 'mouseup', () => {
-  if (isMoving.value || isResizing.value) {
+  if (mouseMovingType.value !== undefined) {
     emit('stop', c)
   }
 
   isMousedown.value = false
-  changeType.value = undefined
-  isMoving.value = false
-  isResizing.value = false
+  mouseMoveType.value = undefined
+  mouseMovingType.value = undefined
 })
 </script>
 
