@@ -15,11 +15,11 @@ import { PositionNumber, UIComponentSetting } from '@/components/page-editor/typ
 import usePlaceholder from '@/components/page-editor/composables/usePlaceholder'
 import BComponentsPanel from '@/components/page-editor/BComponentsPanel.vue'
 import useComponentsPanel from '@/components/page-editor/composables/useComponentsPanel'
-import { componentHasUI, getComponentDefinition } from '@/utils/util'
-import { DefineComponent, getCurrentInstance, ref, resolveComponent } from 'vue'
+import { getComponentDefinition } from '@/utils/util'
+import { getCurrentInstance, ref } from 'vue'
 
 const {
-  components,
+  uiComponents,
   changeComponentPosition,
   addSelected,
   selectedId,
@@ -81,10 +81,6 @@ const onStartNewComponent = (e: MouseEvent, name: string): void => {
   addSelected(true, (newUIComponentSetting.value as UIComponentSetting).id)
 }
 
-const hasUI = (name: string): boolean => {
-  return componentHasUI(resolveComponent(name) as DefineComponent)
-}
-
 </script>
 
 <template>
@@ -99,11 +95,10 @@ const hasUI = (name: string): boolean => {
       <div class="b-workspace">
         <b-placeholder :position-styles="placeholderPositionStyles"/>
         <template
-          v-for="component in components"
+          v-for="component in uiComponents"
           :key="component.id"
         >
           <b-edit-component-position
-            v-if="hasUI(component.name)"
             :component="component"
             :selected-id="selectedId"
             @update-position="onUpdatePosition"

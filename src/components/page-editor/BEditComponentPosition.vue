@@ -15,7 +15,6 @@ import {
   resolveComponent,
 } from 'vue'
 import {
-  ComponentSetting,
   PositionNumber,
   PositionStyles,
   UIComponentSetting,
@@ -28,8 +27,8 @@ import {
 import { GRID_HEIGHT, GRID_WIDTH, LAZY_DELTA } from '@/lib/constants'
 
 const props = defineProps<{
-  component: ComponentSetting
-  selectedId: { [key: string]: true }
+  component: UIComponentSetting
+  selectedId?: { [key: string]: true }
   /**
    * 从组件面板拖出组件时的鼠标事件
    */
@@ -49,7 +48,7 @@ const emit = defineEmits<Emits>()
 /**
  * 组件设置
  */
-const c = props.component as UIComponentSetting
+const c = props.component
 
 const positionStyles = computed<PositionStyles>(() => convertPositionNumberToStyles(c))
 
@@ -86,7 +85,7 @@ const componentStartPosition: Required<PositionNumber> = {
 /**
  * 该组件是否已被选中
  */
-const selected = computed(() => props.selectedId[c.id])
+const selected = computed(() => props.selectedId && props.selectedId[c.id])
 
 const onMousedown = (e: MouseEvent) => {
   if (e.buttons !== 1) {
